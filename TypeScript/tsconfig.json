@@ -1,0 +1,18 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "outDir": "dist",
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "removeComments": true
+    },
+    "exclude": [
+        //기본으로 제외 됨
+        //"node_modules",
+        //"dist"
+    ]
+}
