@@ -1,114 +1,72 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Weather Monitoring in RxJS</title>
-  <style>
-  #form {
-    margin-bottom: 20px;
-  }
-  .location {
-    float: left;
-    padding: 10px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  .location p {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  .zip { font-size: 2em; }
-  .temp { font-size: 4em; }
-  </style>
+  <title>RxJS</title>
 </head>
 <body>
   <div id="app-container">
-    <div id="form">
-      <label>Zip Code:</label>
-      <input type="text" id="zipcode-input">
-      <button id="add-location">Add Location</button>
-    </div>
+    <label>Zip Code:</label>
+    <input type="text" id="txtNickName">
+    <button id="btnOK">확인</button>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.all.min.js"></script>
   <script>
-  // our code will go here
-  console.log('RxJS included?', !!Rx);
+  //1. 배열로부터 스트림을 만듦
+  const myArray = [1,2,3];
+  const myArray$ = 
+    Rx.Observable
+      .fromArray(myArray)
 
-  // Grab HTML elements
+  // 배열 스트림 구독
+  var sss = myArray$.subscribe(
+    x => { console.log('Next: ' + x); },
+    err => { console.log('Next: ' + err); },
+    () => { console.log('Completed'); }
+  );
+
+  // HTML Element 참조 
   const appContainer = document.getElementById('app-container');
-  const zipcodeInput = document.getElementById('zipcode-input');
-  const addLocationBtn = document.getElementById('add-location');
+  const txtNickname = document.getElementById('txtNickName');
+  const btnOK = document.getElementById('btnOK');
 
-  // Get stream of button clicks
-  const btnClickStream =
+  // 2. Button 클릭 이벤트로부터 스트림을 만듦(버튼이 클릭될 때마다, 이벤트 객체가 btnClickStream으로 전송됨)
+  const btnClick$ =
     Rx.Observable
-      .fromEvent(addLocationBtn, 'click')
+      .fromEvent(btnOK, 'click')
       .map(() => true)
-      //.forEach(val => console.log('btnClickStream val', val));
 
-  // Get stream of zip codes
-  const zipInputStream =
+  // 3. Input 입력 이벤트로부터 스트림을 만듦
+  const input$ =
     Rx.Observable
-      .fromEvent(zipcodeInput, 'input')
+      .fromEvent(txtNickname, 'input')
       .map(e => e.target.value)
-      .filter(zip => zip.length === 5)
-      //.forEach(val => console.log('zipInputStream val', val));
+      .filter(nickname => nickname.length >= 4)  // 입력길이가 5가 아닌 값들을 제거하는 필터 적용
+    
+  // 4.스트림 병합하여 새로운 스트림을 만듦
+  const nickName$ =
+    btnClick$
+      .withLatestFrom(input$, (click, zip) => zip) // btnClickStream이 발생할때마다 zipInputStream의 최근값을 얻도록 함
+      .distinct() // 중복값 제거
 
-  // Get zipcode after button clicked
-  const zipcodeStream =
-    btnClickStream
-      .withLatestFrom(zipInputStream, (click, zip) => zip)
-      .distinct()
-      //.forEach(val => console.log('zipcodeStream val', val));
+  // zipcode$ 스트림 구독
+  nickName$.subscribe(zip => {
+    console.log('nickName: ', zip);
+  });
 
-  // Create reusable temperature fetching stream
-  const getTemperature = zip =>
-    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${zip},us&units=imperial&appid=APPID`)
-      .then(res => res.json());
-
-  const zipTemperatureStreamFactory = zip =>
+  // 5.Mouse 이벤트로부터 스트림을 만듦  
+  const mouseDrag$ = 
     Rx.Observable
-      .fromPromise(getTemperature(zip))
-      .map(({ main: { temp } }) => ({ temp, zip }));
+      .fromEvent(appContainer, 'mouseup')
+      .map(md => ({
+          startX: md.offsetX,
+          startY: md.offsetY
+      }));
+  
+  // Mouse 스트림 구독
+  mouseDrag$.subscribe(pos => {
+      console.log(pos);
+  });
 
-  // Get new zip at each button click, get its
-  // temperature, and paint it to the screen
-  zipcodeStream
-    .flatMap(zipTemperatureStreamFactory)
-    .forEach(({ zip, temp }) => {
-      const locationEle = document.createElement('div');
-      locationEle.id = `zip-${zip}`;
-      locationEle.classList.add('location');
-      const zipEle = document.createElement('p');
-      zipEle.classList.add('zip');
-      zipEle.innerText = zip;
-      const tempEle = document.createElement('p');
-      tempEle.classList.add('temp');
-      tempEle.innerHTML = `${temp}&deg;F`;
-      locationEle.appendChild(zipEle);
-      locationEle.appendChild(tempEle);
-      appContainer.appendChild(locationEle);
-      zipcodeInput.value = '';
-    });
-
-  // Create stream that can replay all zips at will
-  const replayZipsStream = new Rx.ReplaySubject();
-  zipcodeStream.subscribe(replayZipsStream);
-
-  // Create a timer to refresh the data
-  // and update the page
-  Rx.Observable
-    .interval(20000)
-    .flatMapLatest(() => replayZipsStream)
-    .flatMap(zipTemperatureStreamFactory)
-    .forEach(({ zip, temp }) => {
-      console.log('Updating!', zip, temp);
-      const locationEle = document.getElementById(`zip-${zip}`);
-      const tempEle = locationEle.querySelector('.temp');
-      tempEle.innerHTML = `${temp}&deg;F`;
-    });
   </script>
 </body>
 </html>
