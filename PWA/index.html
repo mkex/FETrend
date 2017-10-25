@@ -1,42 +1,22 @@
 <!doctype html>
-<html amp lang="ko">
+<html>
 <head>
-	<meta charset="utf-8">
-	<title>AMP Namp Card</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
-    <!-- 단일 amp 페이지임으로 자기 참조합니다 -->
-	<link rel="canonical" href="index.html" />
-	<link rel="manifest" href="manifest.json">
-    <style amp-custom>
-        body {margin:0;font-family:'Roboto',sans-serif;}
-        .card {margin:8%;padding:1% 0;box-shadow:0 0 2px rgba(0,0,0,0.4);transition:0.3s all ease;}
-        .card:hover {box-shadow:0 0 10px rgba(0,0,0,0.5);}
-        .card h1 {font-size:1em;text-align:center;}
-        .card dl {overflow:hidden;margin:0 5%}
-        .card dt {float:left;width:30%;font-weight:700;}
-        .card dd {overflow:hidden}
-  </style>
-
-	<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-	<script async src="https://cdn.ampproject.org/v0.js"></script>
-
-    <script async custom-element="amp-install-serviceworker" src="https://cdn.ampproject.org/v0/amp-install-serviceworker-0.1.js"></script>
-    
+	<meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ZeroCopy-PWA Demo</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 
 <body>
-    <h1>AMP Page - Name Card</h1>
+    <h1>ZeroCopy-PWA Demo</h1>
 
-    <div class="card">
-		<h1>MKEX</h1>
-		<amp-img src="profile.png" alt="My Profile" width="640" height="640" layout="responsive"></amp-img>
-		<dl>
-			<dt>Name:</dt>
-			<dd>jm.park</dd>
-			<dt>Email:</dt>
-			<dd>mkex@naver.com</dd>
-		</dl>
+    <div>
+		<img src="/images/profile.png" alt="mkex" width="640" height="640" layout="responsive"></amp-img>
     </div>
-    <amp-install-serviceworker src="sw.js" layout="nodisplay"></amp-install-serviceworker>
+    
+    <script src="/js/app.js"></script>
 </body>
 </html>
