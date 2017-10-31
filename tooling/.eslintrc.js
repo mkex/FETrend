@@ -7,6 +7,9 @@ module.exports = {
       "browser": true
     },
     "rules": {
+        // "no-console":0,
+        // "no-unused-vars": 0,
+
         "indent": [
           "error",
           4
@@ -22,6 +25,10 @@ module.exports = {
         "semi": [
           "error",
           "always"
-        ]
+        ],
+
+        "max-len": [1, 70, 2, {ignoreComments: true}],
+
+        "camelcase": [2, {"properties": "always"}]
       }
 };
